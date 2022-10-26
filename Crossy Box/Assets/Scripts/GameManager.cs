@@ -60,6 +60,12 @@ public class GameManager : MonoBehaviour
 
     AudioSource audioSource;
     [SerializeField] AudioClip click, step, coin, carhorn, squeak, splash, sand, train, eagle;
+    [SerializeField] Camera camera;
+    Color waterColor = new Color(28f / 255f, 163f / 255f, 236f / 255f);
+    Color sandColor = new Color(210f / 255f, 175f / 255f, 80f / 255f);
+    Color lavaColor = new Color(200f / 255f, 0f / 255f, 50f / 255f);
+    bool isQuit = false;
+    float quitF = 0f;
 
     void Start()
     {
@@ -225,6 +231,18 @@ public class GameManager : MonoBehaviour
         if (player.MaxTravel > SaveLoad.BestScore)
         {
             SaveLoad.BestScore = player.MaxTravel;
+        }
+
+        if (isQuit)
+        {
+            if (quitF < 0.5f)
+            {
+                quitF += Time.deltaTime;
+            }
+            else
+            {
+                Application.Quit();
+            }
         }
     }
 
@@ -495,6 +513,25 @@ public class GameManager : MonoBehaviour
         SaveLoad.GameStarted = true;
         BeginSetup();
 
+        switch (SaveLoad.AreaType)
+        {
+            case "Grass":
+                camera.backgroundColor = waterColor;
+                break;
+            case "Autumn":
+                camera.backgroundColor = waterColor;
+                break;
+            case "Snow":
+                camera.backgroundColor = waterColor;
+                break;
+            case "Sand":
+                camera.backgroundColor = sandColor;
+                break;
+            case "Dark":
+                camera.backgroundColor = lavaColor;
+                break;
+        }
+
         playerObject.SetActive(true);
         playerShadow.SetActive(true);
         startGame = true;
@@ -537,6 +574,7 @@ public class GameManager : MonoBehaviour
 
     public void QuitGame()
     {
-        Application.Quit();
+        SFX_Click();
+        isQuit = true;
     }
 }
